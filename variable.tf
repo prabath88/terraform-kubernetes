@@ -6,8 +6,12 @@ variable "AWS_PROFILE" {
   default = "senaka"
 }
 
-variable "instance_count" {
-  default = "2"
+variable "minion_count" {
+  default = "1"
+}
+
+variable "master_count" {
+  default = "1"
 }
 
 variable "PRIVATE_KEY_PATH" {
@@ -19,7 +23,7 @@ variable "PUBLIC_KEY_PATH" {
 }
 
 variable "EC2_USER" {
-  default = "ubuntu"
+  default = "ec2-user"
 }
 variable "AMI" {
   type = "map"
