@@ -9,9 +9,7 @@ resource "aws_route_table" "prod-public-crt" {
     vpc_id = "${aws_vpc.kube-vpc.id}"
     
     route {
-        //associated subnet can reach everywhere
         cidr_block = "0.0.0.0/0" 
-        //CRT uses this IGW to reach internet
         gateway_id = "${aws_internet_gateway.prod-igw.id}" 
     }
     
@@ -38,9 +36,6 @@ resource "aws_security_group" "ssh-allowed" {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        // This means, all ip address are allowed to ssh ! 
-        // Do not do it in the production. 
-        // Put your office or home address in it!
         cidr_blocks = ["0.0.0.0/0"]
     }
 
@@ -50,7 +45,6 @@ resource "aws_security_group" "ssh-allowed" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
-    //If you do not add this rule, you can not reach the NGIX  
     ingress {
         from_port = 80
         to_port = 80
