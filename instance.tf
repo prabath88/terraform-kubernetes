@@ -21,8 +21,6 @@ resource "aws_instance" "minion" {
     }
 }
 
-
-
 resource "aws_instance" "master" {
     ami = "${lookup(var.AMI, var.AWS_REGION)}"
     instance_type = "t2.medium"
@@ -31,24 +29,34 @@ resource "aws_instance" "master" {
     vpc_security_group_ids = ["${aws_security_group.ssh-allowed.id}"]
     key_name = "${aws_key_pair.london-region-key-pair.id}"
 
+    depends_on = [
+    aws_instance.minion,
+  ]
+
     provisioner "file" {
       source = "london-region-key-pair"
       destination = "/home/ec2-user/.ssh/ansible_key"
     }
 
+    provisioner "file" {
+      source = "ansible-runner.sh"
+      destination = "/home/ec2-user/scripts/ansible-runner.sh"
+    }
+
     provisioner "remote-exec" {
         inline = [
              "sudo yum install git vim ansible -y",
-             "sudo mkdir -p /tmp/paas",
              "git clone https://github.com/prabath88/instant-kubernetes.git",
              "export ANSIBLE_HOST_KEY_CHECKING=False",
              "chmod 400 /home/ec2-user/.ssh/ansible_key",
              "chown ec2-user:ec2-user /home/ec2-user/.ssh/ansible_key",
              "eval $(ssh-agent -s)",
-             "ssh-add /home/ec2-user/.ssh/ansible_key"
+             "ssh-add /home/ec2-user/.ssh/ansible_key",
+             "chmod +x /home/ec2-user/scripts/ansible-runner.sh",
+             "sh /home/ec2-user/scripts/ansible-runner.sh",
+
         ]
     }
-
 
     connection {
         user = "${var.EC2_USER}"
@@ -63,6 +71,7 @@ resource "aws_instance" "master" {
     tags = {
       Name = "master"
     }
+    
 }
 
 // Sends your public key to the instance
