@@ -43,6 +43,13 @@ resource "aws_security_group" "ssh-allowed" {
         // Put your office or home address in it!
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    ingress {
+        from_port = 6443
+        to_port = 6443
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
     //If you do not add this rule, you can not reach the NGIX  
     ingress {
         from_port = 80
@@ -51,6 +58,6 @@ resource "aws_security_group" "ssh-allowed" {
         cidr_blocks = ["0.0.0.0/0"]
     }
     tags {
-        Name = "ssh-allowed"
+        Name = "allowed-rules"
     }
 }
