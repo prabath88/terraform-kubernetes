@@ -8,10 +8,9 @@ resource "aws_instance" "web1" {
 
     provisioner "remote-exec" {
         inline = [
-             "sudo apt install git -y",
-             "sudo mkdir /tmp/test",
-             "touch /tmp/ela",
-//             "git clone git@github.com:prabath88/kubernetes.git",
+             "sudo apt install git vim ansible -y",
+             "sudo mkdir -p /tmp/paas",
+             "cd /tmp/paas",
         ]
     }
 
@@ -22,8 +21,7 @@ resource "aws_instance" "web1" {
 
     user_data = <<HEREDOC
     #!/bin/bash
-    sudo apt install git -y
-    sudo touch /home/kkkkkk
+    sudo apt install nginx -y
     HEREDOC
 
 }
